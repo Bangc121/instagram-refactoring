@@ -1,59 +1,43 @@
 "use client";
 
-import "react-multi-carousel/lib/styles.css";
+import { DetailUser, User } from "@/model/user";
 
 import Avatar from "./Avatar";
 import { BeatLoader } from "react-spinners";
-import Carousel from "react-multi-carousel";
-import { User } from "@/model/user";
-import { useFollowings } from "@/hook/useFollowings";
+import Link from "next/link";
+import ScrollableBar from "./ui/ScrollableBar";
 import useSWR from "swr";
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 7,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 6,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 6,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 4,
-  },
-};
 
 type Props = {
   user: User;
 };
 
 export default function FollowingBar({ user }: Props) {
-  const { data, isLoading, isError } = useSWR("/api/me");
-
-  console.log(data);
+  const { data, isLoading: loading, error } = useSWR<DetailUser>("/api/me");
+  const users = data?.followings;
   return (
-    <div className="flex h-44 rounded-md overflow-hidden shadow-l hover:shadow-xl p-5 justify-center items-center">
-      {isLoading ? (
-        <BeatLoader color="#36d7b7" />
+    <section className="w-full flex justify-center items-center p-4 shadow-sm shadow-netural-300 mb-4 rounded-lg min-h-[90px] overflow-x-auto">
+      {loading ? (
+        <BeatLoader size={8} color="red" />
       ) : (
-        <div className="w-full">
-          {/* <Carousel responsive={responsive}>
-            {data?.followings.map((following: User) => (
-              <Avatar
-                key={user.username}
-                image={following.image}
-                size="normal"
-                highright
-              />
-            ))}
-          </Carousel> */}
-        </div>
+        (!users || users.length === 0) && <p>{`You don't have following`}</p>
       )}
-    </div>
+      {users && users.length > 0 && (
+        <ScrollableBar>
+          {users.map(({ username, image }) => (
+            <Link
+              href={`/user/${username}`}
+              key={username}
+              className="flex flex-col items-center w-20"
+            >
+              <Avatar image={image} size="normal" highright />
+              <p className="w-full text-center text-sm text-ellipsis overflow-hidden">
+                {username}
+              </p>
+            </Link>
+          ))}
+        </ScrollableBar>
+      )}
+    </section>
   );
 }
