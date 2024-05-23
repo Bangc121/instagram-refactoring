@@ -3,17 +3,13 @@ import "react-multi-carousel/lib/styles.css";
 import Carousel from "react-multi-carousel";
 
 const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 7,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+  desk: {
+    breakpoint: { max: 4000, min: 576 },
     items: 6,
   },
   mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 5,
+    breakpoint: { max: 576, min: 0 },
+    items: 4,
   },
 };
 
