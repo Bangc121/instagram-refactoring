@@ -2,7 +2,6 @@ import { urlFor, urlForImage } from "../../sanity/lib/image";
 
 import { SimplePost } from "@/model/post";
 import { client } from "../../sanity/lib/client";
-import user from "../../sanity/schemas/user";
 
 const simplePostProjection = `
 ...,
@@ -65,8 +64,8 @@ export async function getSavedPostsOf(username: string) {
     .then(mapPosts);
 }
 
-function mapPosts(posts: SimplePost[]) {
-  return posts.map((post: SimplePost) => ({
+async function mapPosts(posts: SimplePost[]) {
+  return posts && posts.length > 0 && posts.map((post: SimplePost) => ({
     ...post,
     image: urlForImage(post.image),
   }));
