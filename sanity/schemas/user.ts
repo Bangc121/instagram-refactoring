@@ -33,7 +33,7 @@ const user = {
           to: [{ type: "user" }],
         },
       ],
-      validation: (rule) => rule.unique(),
+      validation: (Rule) => Rule.unique(),
     },
     {
       name: "followers",
@@ -45,7 +45,7 @@ const user = {
           to: [{ type: "user" }],
         },
       ],
-      validation: (rule) => rule.unique(),
+      validation: (Rule) => Rule.unique(),
     },
     {
       name: "bookmarks",
@@ -57,7 +57,7 @@ const user = {
           to: [{ type: "post" }],
         },
       ],
-      validation: (rule) => rule.unique(),
+      validation: (Rule) => Rule.unique(),
     },
     {
       name: "createdAt",

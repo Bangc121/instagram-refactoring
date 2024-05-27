@@ -1,12 +1,12 @@
 "use client";
 
+import BookmarkIcon from "./ui/icons/BookmarkIcon";
+import HeartIcon from "./ui/icons/HeartIcon";
+import PostGrid from "./PostGrid";
+import PostIcon from "./ui/icons/PostIcon";
 import { ProfileUser } from "@/model/user";
 import useSWR from "swr";
 import { useState } from "react";
-import PostIcon from "./ui/icons/PostIcon";
-import HeartIcon from "./ui/icons/HeartIcon";
-import BookmarkIcon from "./ui/icons/BookmarkIcon";
-import PostGrid from "./PostGrid";
 
 type Props = {
   user: ProfileUser;
@@ -18,14 +18,15 @@ const tabs = [
     icon: <PostIcon />,
   },
   {
-    type: "saved",
-    icon: <BookmarkIcon />,
+    type: "bookmarks",
+    icon: <BookmarkIcon className="w-3 h-3" />,
   },
   {
     type: "liked",
-    icon: <HeartIcon />,
+    icon: <HeartIcon className="w-3 h-3" />,
   },
 ];
+
 export default function UserPosts({ user }: Props) {
   const { username } = user;
   const [query, setQuery] = useState(tabs[0].type);

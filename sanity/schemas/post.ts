@@ -1,3 +1,5 @@
+import { validation } from "sanity";
+
 const post = {
   name: "post",
   title: "Post",
@@ -9,7 +11,6 @@ const post = {
       type: "reference",
       description: "owner of the post",
       to: [{ type: "user" }],
-      validation: (Rule) => Rule.required(),
     },
     {
       name: "likes",

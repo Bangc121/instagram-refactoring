@@ -1,18 +1,11 @@
 "use client";
 
-import { DotLoader, GridLoader } from "react-spinners";
-
 import GridSpinner from "./ui/GridSpinner";
 import PostListCard from "./PostListCard";
-import { SimplePost } from "@/model/post";
-import useSWR from "swr";
+import usePosts from "@/hooks/usePosts";
 
 export default function PostList() {
-  const {
-    data: posts,
-    isLoading: loading,
-    error,
-  } = useSWR<SimplePost[]>("/api/post");
+  const { posts, isLoading: loading } = usePosts();
 
   return (
     <section>

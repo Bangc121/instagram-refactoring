@@ -37,13 +37,26 @@ export async function getPostById(id: string) {
     "createdAt": _createdAt,
   }`
     )
-    .then(mapPosts);
+    .then((post: SimplePost) => ({
+      ...post,
+      likes: post.likes ?? [],
+      image: urlForImage(post.image),
+    }));
 }
 
 export async function getPostsOf(username: string) {
+  console.log("username", username);
   return client
     .fetch(
-      `*[_type == "post" && author->username == "${username}"] | order(_createdAt desc){${simplePostProjection}}`
+      `*[_type == "post" && author->username == "${username}"] | order(_createdAt desc){...,
+        "username": author->username,
+        "userImage": author->image,
+        "image": image,
+        "likes": likes[] -> username,
+        "text": comments[0].comment,
+        "comments": count(comments),
+        "id": _id,
+        "createdAt": _createdAt,}`
     )
     .then(mapPosts);
 }
@@ -65,8 +78,53 @@ export async function getSavedPostsOf(username: string) {
 }
 
 async function mapPosts(posts: SimplePost[]) {
-  return posts && posts.length > 0 && posts.map((post: SimplePost) => ({
-    ...post,
-    image: urlForImage(post.image),
-  }));
+  return (
+    posts &&
+    posts.length > 0 &&
+    posts.map((post: SimplePost) => ({
+      ...post,
+      likes: post.likes ?? [],
+      image: urlForImage(post.image),
+    }))
+  );
+}
+
+export async function likePost(postId: string, userId: string) {
+  return client
+    .patch(postId)
+    .setIfMissing({ likes: [] })
+    .append("likes", [
+      {
+        _ref: userId,
+        _type: "reference",
+      },
+    ])
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function unlikePost(postId: string, userId: string) {
+  return client
+    .patch(postId)
+    .unset([`likes[_ref == "${userId}"]`])
+    .commit();
+}
+
+export async function addComment(
+  postId: string,
+  userId: string,
+  comment: string
+) {
+  return client
+    .patch(postId)
+    .setIfMissing({ comments: [] })
+    .append("comments", [
+      {
+        comment,
+        author: {
+          _ref: userId,
+          _type: "reference",
+        },
+      },
+    ])
+    .commit({ autoGenerateArrayKeys: true });
 }

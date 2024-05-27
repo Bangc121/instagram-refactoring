@@ -1,8 +1,8 @@
-import { useState } from "react";
-import useSWR from "swr";
 import GridSpinner from "./ui/GridSpinner";
-import { SimplePost } from "@/model/post";
 import PostGridCard from "./PostGridCard";
+import { SimplePost } from "@/model/post";
+import useSWR from "swr";
+import { useState } from "react";
 
 type Props = {
   username: string;
@@ -10,12 +10,12 @@ type Props = {
 };
 
 export default function PostGrid({ username, query }: Props) {
-  const [tab, setTab] = useState<"posts" | "liked" | "bookmarks">("posts");
   const {
     data: posts,
     isLoading,
     error,
   } = useSWR<SimplePost[]>(`/api/users/${username}/${query}`);
+
   return (
     <div className="w-full text-center">
       {isLoading && <GridSpinner />}
