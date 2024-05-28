@@ -15,7 +15,7 @@ export type HomeUser = AuthUser & {
 };
 
 export type SearchUser = AuthUser & {
-  following: number;
+  followings: number;
   followers: number;
 };
 

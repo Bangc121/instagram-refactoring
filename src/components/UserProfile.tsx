@@ -6,7 +6,7 @@ type Props = {
   user: ProfileUser;
 };
 export default function UserProfile({ user }: Props) {
-  const { image, name, username, email, following, followers, posts } = user;
+  const { image, name, username, email, followings, followers, posts } = user;
   const info = [
     {
       title: "posts",
@@ -18,7 +18,7 @@ export default function UserProfile({ user }: Props) {
     },
     {
       title: "following",
-      data: following,
+      data: followings,
     },
   ];
   return (

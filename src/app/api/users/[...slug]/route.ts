@@ -14,7 +14,6 @@ export async function GET(_: NextRequest, context: Context) {
   }
 
   const [username, query] = slug;
-  console.log("username", username, query);
   let request = getPostsOf;
   if (query === "liked") {
     request = getLikedPostsOf;

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import UserSearch from "@/components/UserSearch";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "User Search",

@@ -16,10 +16,16 @@ type Props = {
   post: SimplePost;
   children?: React.ReactNode;
   onComment: (comment: Comment) => void;
+  cacheKey: string;
 };
 
-export default function ActionBar({ post, children, onComment }: Props) {
-  const { id, likes, createdAt, username } = post;
+export default function ActionBar({
+  post,
+  children,
+  onComment,
+  cacheKey,
+}: Props) {
+  const { id, likes, createdAt } = post;
 
   const { user, setBookmark } = useMe();
   const { setLike } = usePosts();

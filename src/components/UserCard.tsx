@@ -7,7 +7,7 @@ type Props = {
   user: SearchUser;
 };
 export default function UserCard({
-  user: { name, username, email, image, followers, following },
+  user: { name, username, image, followers, followings },
 }: Props) {
   return (
     <Link
@@ -18,7 +18,7 @@ export default function UserCard({
       <div className="text-neutral-500 ml-2">
         <p className="text-black font-bold leading-4">{username}</p>
         <p>{name}</p>
-        <p className="text-sm leading-4">{`${followers} followers ${following} followings`}</p>
+        <p className="text-sm leading-4">{`${followers} follower ${followings} following`}</p>
       </div>
     </Link>
   );

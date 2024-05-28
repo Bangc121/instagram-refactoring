@@ -7,7 +7,6 @@ import { SearchUser } from "@/model/user";
 import UserCard from "./UserCard";
 import useDebounce from "@/hooks/useDebounce";
 import useSWR from "swr";
-import user from "../../sanity/schemas/user";
 
 export default function UserSearch() {
   const [keyword, setKeyword] = useState<string>("");

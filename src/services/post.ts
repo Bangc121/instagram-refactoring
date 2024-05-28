@@ -1,5 +1,6 @@
 import { urlFor, urlForImage } from "../../sanity/lib/image";
 
+import { SanityImageAssetDocument } from "next-sanity";
 import { SimplePost } from "@/model/post";
 import { client } from "../../sanity/lib/client";
 
@@ -20,7 +21,16 @@ export async function getFollowingPostOf(username: string) {
       `*[_type == "post" && author->username == "${username}" || 
     author._ref in *[_type == "user" && username == "${username}"].followings[]._ref] | order(_createdAt desc){${simplePostProjection}}`
     )
-    .then(mapPosts);
+    .then(
+      (posts) =>
+        posts &&
+        posts.length > 0 &&
+        posts.map((post: SimplePost) => ({
+          ...post,
+          likes: post.likes ?? [],
+          image: urlForImage(post.image),
+        }))
+    );
 }
 
 export async function getPostById(id: string) {
@@ -45,7 +55,6 @@ export async function getPostById(id: string) {
 }
 
 export async function getPostsOf(username: string) {
-  console.log("username", username);
   return client
     .fetch(
       `*[_type == "post" && author->username == "${username}"] | order(_createdAt desc){...,
@@ -58,7 +67,16 @@ export async function getPostsOf(username: string) {
         "id": _id,
         "createdAt": _createdAt,}`
     )
-    .then(mapPosts);
+    .then(
+      (posts) =>
+        posts &&
+        posts.length > 0 &&
+        posts.map((post: SimplePost) => ({
+          ...post,
+          likes: post.likes ?? [],
+          image: urlForImage(post.image),
+        }))
+    );
 }
 
 export async function getLikedPostsOf(username: string) {
@@ -66,7 +84,16 @@ export async function getLikedPostsOf(username: string) {
     .fetch(
       `*[_type == "post" && "${username}" in likes[] -> username] | order(_createdAt desc){${simplePostProjection}}`
     )
-    .then(mapPosts);
+    .then(
+      (posts) =>
+        posts &&
+        posts.length > 0 &&
+        posts.map((post: SimplePost) => ({
+          ...post,
+          likes: post.likes ?? [],
+          image: urlForImage(post.image),
+        }))
+    );
 }
 
 export async function getSavedPostsOf(username: string) {
@@ -74,7 +101,16 @@ export async function getSavedPostsOf(username: string) {
     .fetch(
       `*[_type == "post" && _id in *[_type == "user" && username == "${username}"].bookmarks[]._ref] | order(_createdAt desc){${simplePostProjection}}`
     )
-    .then(mapPosts);
+    .then(
+      (posts) =>
+        posts &&
+        posts.length > 0 &&
+        posts.map((post: SimplePost) => ({
+          ...post,
+          likes: post.likes ?? [],
+          image: urlForImage(post.image),
+        }))
+    );
 }
 
 async function mapPosts(posts: SimplePost[]) {
@@ -127,4 +163,34 @@ export async function addComment(
       },
     ])
     .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function createPost(userId: string, text: string, file: File) {
+  return client.assets
+    .upload("image", file, {
+      contentType: file.type,
+      filename: file.name,
+    })
+    .then((imageAsset: SanityImageAssetDocument) => {
+      console.log("imageAsset", imageAsset);
+      return client.create(
+        {
+          _type: "post",
+          author: { _ref: userId },
+          image: {
+            asset: { _ref: imageAsset._id },
+          },
+          comments: [
+            {
+              comment: text,
+              author: { _ref: userId, _type: "reference" },
+            },
+          ],
+          likes: [],
+        },
+        {
+          autoGenerateArrayKeys: true,
+        }
+      );
+    });
 }

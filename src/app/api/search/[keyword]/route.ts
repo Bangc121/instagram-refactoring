@@ -10,5 +10,6 @@ type Context = {
 
 export async function GET(_: NextRequest, context: Context) {
   const keyword = context.params.keyword;
+  console.log("keyword", keyword);
   return searchUsers(keyword).then((data) => NextResponse.json(data));
 }
